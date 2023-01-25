@@ -41,4 +41,39 @@ const registerUser = async (req: Request, res: Response) => {
   }
 };
 
-export default { registerUser };
+const loginUser = async (req: Request, res: Response) => {
+  let user, checkPassword;
+  const { email, password } = req.body;
+  try {
+    //validation: TODO
+
+    //check email
+    user = await User.findOne({ email });
+    if (!user) {
+      return res
+        .status(400)
+        .json({ error: true, message: "Email or Password is wrong!" });
+    }
+
+    //check password
+    checkPassword = await bcrypt.compare(password, user.password);
+    if (!checkPassword) {
+      return res
+        .status(400)
+        .json({ error: true, message: "Email or Password is wrong!" });
+    }
+
+    //generate token: TODO
+    //send token: TODO
+
+    res.status(200).json({
+      error: false,
+      message: "Login Succesfully!",
+      data: user
+    });
+  } catch (error) {
+    res.status(500).json({ error: true, message: error });
+  }
+};
+
+export default { registerUser, loginUser };
