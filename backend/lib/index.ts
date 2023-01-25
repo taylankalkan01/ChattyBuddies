@@ -1,4 +1,5 @@
 import express, { Application,Response } from 'express';
+import {MongoConnection} from "./databases/mongoDB"
 import dotenv from "dotenv"
 dotenv.config({
     path: "./.env.local"
@@ -15,5 +16,5 @@ app.get('/', (_, res:Response) => {
 const PORT= process.env.APP_PORT
 app.listen(PORT, async() => {
     console.log(`The application is listening on port ${PORT}!`);
-    
+    await MongoConnection();
 })
