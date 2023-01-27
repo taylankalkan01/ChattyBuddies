@@ -2,6 +2,7 @@ import { Response, Request } from "express";
 import User from "../models/User";
 import bcrypt from "bcrypt";
 import { loginUserInput, registerUserInput } from "../schemas/authValidation";
+import { generateToken } from "../helpers/tokens/generateToken";
 
 const registerUser = async (req: Request, res: Response) => {
   let user, data;
@@ -44,7 +45,7 @@ const registerUser = async (req: Request, res: Response) => {
 };
 
 const loginUser = async (req: Request, res: Response) => {
-  let user, checkPassword;
+  let user, checkPassword, token, cookieOptions: object;
   const { email, password } = req.body;
   try {
     //validation
@@ -66,13 +67,26 @@ const loginUser = async (req: Request, res: Response) => {
         .json({ error: true, message: "Email or Password is wrong!" });
     }
 
-    //generate token: TODO
-    //send token: TODO
+    //generate token
+    token = await generateToken(user);
+
+    //send token
+    cookieOptions = {
+      httpOnly: true,
+      secure: false,
+      sameSite: "none", //boolean | 'lax' | 'strict' | 'none' | undefined;
+      maxAge: 60 * 60 * 24 * 1000
+      // signed: true
+      // path?: string | undefined;
+      // domain?: string | undefined;
+    };
+    res.cookie("jwt", token, cookieOptions);
 
     res.status(200).json({
       error: false,
       message: "Login Succesfully!",
-      data: user
+      data: user,
+      token: token
     });
   } catch (error) {
     res.status(500).json({ error: true, message: error });
