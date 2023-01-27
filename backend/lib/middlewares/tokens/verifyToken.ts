@@ -1,9 +1,6 @@
 import jwt, { Secret, JwtPayload } from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
-import dotenv from "dotenv";
-dotenv.config({
-  path: "./.env.local"
-});
+import config from "config";
 
 export interface CustomRequest extends Request {
   token: string | JwtPayload;
@@ -15,7 +12,7 @@ export const verifyToken = async (
   next: NextFunction
 ) => {
   const token = req.cookies.jwt;
-  const key: Secret = process.env.ACCESS_TOKEN_PRIVATE_KEY || "";
+  const key = config.get<Secret>("ACCESS_TOKEN_PRIVATE_KEY") || "";
   let user;
   try {
     if (!token) {

@@ -1,10 +1,7 @@
 import mongoose, { ConnectOptions } from "mongoose";
-import dotenv from "dotenv";
-dotenv.config({
-  path: "./.env.local"
-});
+import config from "config";
 
-const MONGO_URL = process.env.MONGO_URL;
+const MONGO_URL = config.get<any>("MONGO_URL");
 mongoose.set("strictQuery", false);
 
 export const MongoConnection = async () => {
