@@ -1,12 +1,14 @@
 import { Response, Request } from "express";
 import User from "../models/User";
 import bcrypt from "bcrypt";
+import { loginUserInput, registerUserInput } from "../schemas/authValidation";
 
 const registerUser = async (req: Request, res: Response) => {
   let user, data;
   const { email, firstName, lastName, password } = req.body;
   try {
-    //validation: TODO
+    //validation
+    registerUserInput.parse(req.body);
 
     //check email
     user = await User.findOne({ email });
@@ -45,7 +47,8 @@ const loginUser = async (req: Request, res: Response) => {
   let user, checkPassword;
   const { email, password } = req.body;
   try {
-    //validation: TODO
+    //validation
+    loginUserInput.parse(req.body);
 
     //check email
     user = await User.findOne({ email });
