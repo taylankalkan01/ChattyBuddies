@@ -93,4 +93,15 @@ const loginUser = async (req: Request, res: Response) => {
   }
 };
 
-export default { registerUser, loginUser };
+const logoutUser = async (req: Request, res: Response) => {
+  try {
+    res.clearCookie("jwt").status(200).json({
+      error: false,
+      message: "Logout Successful."
+    });
+  } catch (error) {
+    res.status(500).json({ error: true, message: error });
+  }
+};
+
+export default { registerUser, loginUser, logoutUser };
