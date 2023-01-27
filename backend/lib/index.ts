@@ -8,11 +8,13 @@ import config from "config";
 // Custom Modules, Packages, Configs, etc.
 import { MongoConnection } from "./databases/mongoDB";
 import { initRoutes } from "./routes/routes";
+import initCors from "./helpers/cors/cors";
 
 const app: Application = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(helmet.default());
+initCors(app);
 
 app.get("/", (_, res: Response) => {
   res.send("Chatty Buddies!");
